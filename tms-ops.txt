@@ -1,0 +1,50 @@
+Select 
+    id,
+    otherservicecde AS sc_no,
+    chargescde AS service,
+    osdtefr AS date_from,
+    osdteto AS date_to,
+    ostimefr AS time_from,
+    ostimeto AS time_to,
+    rateperunit AS rate,
+    quantity AS qty,
+    descofworkrpr AS remarks,
+    ostotal AS total,
+FROM operationadjustmentfile AS t_m_s_service_charges_x_records;
+
+
+SELECT
+    id,
+    adjustmentcde AS adjustment_no,
+    termsofleasecde AS awardnotice_no,
+    Starting Month Year Format AS billing_period,
+    CASE
+        WHEN posted = 1 THEN 10
+        WHEN posted = 0 THEN 20
+    END AS 'status'
+    postdte AS date,
+FROM operationadjustmentfile AS t_m_s_operation_adjustments;
+
+SELECT
+    id,
+    adjustmentcde AS adjustment_no,
+    termsofleasecde AS awardnotice_no,
+FROM operationadjustmentfile AS t_m_s_operation_adjustment_x_meters;
+
+SELECT
+    id,
+    adjustmentcde AS adjustment_no,
+    termsofleasecde AS awardnotice_no,
+    soano AS sc_no,
+FROM operationadjustmentfile AS t_m_s_operation_adjustment_x_service_charges;
+
+SELECT
+    id,
+    meterctype AS charge_type,
+    postdte AS posted_at,
+    billperiodfr AS covered_from,
+    billperiodto AS covered_to,
+    AS ,
+    AS ,
+    CASE
+FROM  AS ;
