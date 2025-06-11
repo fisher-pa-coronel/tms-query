@@ -47,4 +47,5 @@ SELECT
     AS ,
     AS ,
     CASE
-FROM  AS ;
+    END AS 'status'
+FROM meterreadingfile AS t_m_s_meter_readings;
