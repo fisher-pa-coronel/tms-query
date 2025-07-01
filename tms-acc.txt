@@ -1,0 +1,10 @@
+SELECT 
+    id,
+    chargesdesc AS code,
+    CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`
+FROM old_table_name AS new_table_name;
+// incomplete
+

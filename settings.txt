@@ -1,0 +1,60 @@
+SELECT 
+    id,
+    deptcde AS code,
+    deptdesc AS description,
+    CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`
+FROM departmentfile AS departments;
+
+SELECT 
+    id,
+    branchaddr AS address,
+    branchsname AS shortname,
+    branchname AS `name`,
+    faxno,
+    comnme AS companyname,
+    comtin AS tinid,
+    contactno,
+    bussstyle AS businessstyle,
+    CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`
+FROM branchfile AS malls;
+
+SELECT 
+    id,
+    loccode AS locationcode,
+    flrlvl AS mallfloorlevelid,
+    flrareain as interiorarea,
+    flrareaex as exteriorarea,
+    unitno,
+    totalflrarea AS totalarea,
+    
+    CASE
+        WHEN branchcde = QAV THEN 1
+        WHEN branchcde = MLB THEN 2
+    END AS mallid
+    CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`
+FROM locationfile AS locations;
+
+SELECT 
+    id,
+    fname AS firstname,
+    lname AS lastname,
+    mname AS middlename,
+    department AS departmentid,
+    email_add AS email,
+    '1' AS mallid,
+    usercde AS employeenumber,
+    regdte AS created_at,
+    CASE
+        WHEN status = 1 THEN 10
+        WHEN status = null THEN 20
+    END AS `status`
+FROM userfile AS users;

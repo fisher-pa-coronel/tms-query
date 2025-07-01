@@ -49,3 +49,20 @@ SELECT
     CASE
     END AS 'status'
 FROM meterreadingfile AS t_m_s_meter_readings;
+
+SELECT
+    id,
+    preconcde AS preconstruction_code,
+    precondesc AS description,
+    '10' AS status,
+    
+FROM preconstructionfile AS t_m_s_preconstruction_requirements
+
+SELECT
+    id,
+    part AS preoperational_code,
+    partdesc AS description,
+    authorsignatory AS authorized_signatory,
+    '10' AS status,
+    
+FROM preconstructionfile AS t_m_s_preconstruction_requirements

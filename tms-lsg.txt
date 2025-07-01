@@ -1,0 +1,10 @@
+SELECT 
+    id,
+    clienacctcde AS clientid,
+    tenantacctaddr AS corporatename,
+    tenantacctaddr AS clientaddress,
+    tenantacctcno AS clientcontactno,
+    tenantaccttin AS clienttin,
+    
+FROM companyaccountfile AS t_m_s_clients;
+
