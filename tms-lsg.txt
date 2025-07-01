@@ -1,3 +1,5 @@
+//system setup
+
 SELECT 
     id,
     clienacctcde AS clientid,
@@ -8,3 +10,32 @@ SELECT
     
 FROM companyaccountfile AS t_m_s_clients;
 
+SELECT
+    id,
+    tenantcde AS tenanttypeid,
+    tenantdesc AS description,
+    contractdoc AS document,
+FROM tenanttypefile AS t_m_s_tenant_types;
+
+SELECT
+    id,
+    busscategorycde AS tmsBusinessCategoryID,
+    busscategorydsc AS description,
+    status	"CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`"
+FROM businesscategoryfile AS t_m_s_business_categories;
+
+SELECT
+    id,
+    rscde AS rentalschemeid,
+    rsnme AS description,
+    status	"CASE
+            WHEN deleted = 0 THEN 10
+            WHEN deleted = 1 THEN 20
+        END AS `status`"
+
+FROM rentalschemefile AS t_m_s_rental_schemes;
+
+//main module
