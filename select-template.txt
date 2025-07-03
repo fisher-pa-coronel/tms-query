@@ -12,3 +12,28 @@ SELECT
     AS ,
 FROM  AS ;
 
+id	id
+counter	id
+	
+anno	termsofleasecde
+	
+	
+locationid	loccde
+establishmentname	storenme
+clientid	clientnme
+tenanttypeid	tenanttype
+tradename	clientnme
+categoryid	busscategory
+permittedusage	permitusage
+tin	tin
+fitoutfrom	foperiodfrdte
+fitoutto	foperiodtodte
+headofficetin	br_tin
+headofficeaddress	br_address
+status	termstatus
+state	
+	
+	
+	
+terminatedat	terminatedte
+createdby	preparedby
