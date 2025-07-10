@@ -7,36 +7,34 @@ SELECT
     bussnature AS clientname,
     tenantacctaddr AS clientaddress,
     tenantacctcno AS clientcontactno,
-    tenantaccttin AS clienttin,
-    
+    tenantaccttin AS clienttin
 FROM companyaccountfile AS t_m_s_clients;
 
 SELECT
     id,
     tenantcde AS tenanttypeid,
     tenantdesc AS description,
-    contractdoc AS document,
+    contractdoc AS document
 FROM tenanttypefile AS t_m_s_tenant_types;
 
 SELECT
     id,
     busscategorycde AS tmsBusinessCategoryID,
     busscategorydsc AS description,
-    status	"CASE
+    CASE
         WHEN deleted = 0 THEN 10
         WHEN deleted = 1 THEN 20
-    END AS `status`"
+    END AS `status`
 FROM businesscategoryfile AS t_m_s_business_categories;
 
 SELECT
     id,
     rscde AS rentalschemeid,
     rsnme AS description,
-    status	"CASE
-            WHEN deleted = 0 THEN 10
-            WHEN deleted = 1 THEN 20
-        END AS `status`"
-
+    CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`
 FROM rentalschemefile AS t_m_s_rental_schemes;
 
 //main module
@@ -57,5 +55,5 @@ SELECT
     br_address AS headofficeaddress,
     termstatus AS status,
     terminatedte AS terminatedat,
-    preparedby AS createdby,
+    preparedby AS createdby
 FROM clientofferfile AS t_m_s_award_notices;
