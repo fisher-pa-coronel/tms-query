@@ -1,5 +1,6 @@
 import pymysql
 import csv
+import os
 
 # Database connection
 conn = pymysql.connect(
@@ -10,8 +11,12 @@ conn = pymysql.connect(
 )
 cursor = conn.cursor()
 
+# Define output folder
+output_folder = "generated_exports"
+os.makedirs(output_folder, exist_ok=True)  # Create if not exists
+
 # Read SQL file
-file_path = "settings_queries\settings.txt"
+file_path = "settings_queries\\settings.txt"  # Use double backslash or raw string
 with open(file_path, 'r') as file:
     content = file.read()
 
@@ -38,12 +43,14 @@ for idx, query in enumerate(queries):
         columns = [desc[0] for desc in cursor.description]
 
         filename = f"settings_export_{idx+1}.csv"
-        with open(filename, mode='w', newline='', encoding='utf-8') as csvfile:
+        file_path_csv = os.path.join(output_folder, filename)
+
+        with open(file_path_csv, mode='w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(columns)  # Write header
             writer.writerows(rows)    # Write data
 
-        print(f"Exported query {idx+1} to {filename}")
+        print(f"Exported query {idx+1} to '{file_path_csv}'")
     else:
         # Optional: execute non-SELECT queries
         try:
