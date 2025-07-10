@@ -50,6 +50,7 @@ SELECT
     mname AS middlename,
     department AS departmentid,
     email_add AS email,
+    '$2y$10$0yh3yqTsImxsx5cqsl0PFejOEcVlTGAqajZpSyzTf.8P05mu51ooa' AS password,
     '1' AS mallid,
     usercde AS employeenumber,
     regdte AS created_at,
