@@ -1,6 +1,7 @@
 import pymysql
 import csv
 import os
+import re  # for regex
 
 # Database connection
 conn = pymysql.connect(
@@ -35,14 +36,25 @@ for line in content.splitlines():
 if current_query.strip():
     queries.append(current_query.strip())
 
-# Execute each SELECT query and export to CSV
+# Function to extract alias from FROM ... AS alias
+def get_table_alias(sql):
+    match = re.search(r'FROM\s+\w+\s+AS\s+(\w+)', sql, re.IGNORECASE)
+    return match.group(1) if match else None
+
+# Execute each SELECT query and export to CSV using alias as filename
 for idx, query in enumerate(queries):
     if query.lower().startswith("select"):
         cursor.execute(query)
         rows = cursor.fetchall()
         columns = [desc[0] for desc in cursor.description]
 
-        filename = f"settings_export_{idx+1}.csv"
+        # Try to extract table alias
+        alias = get_table_alias(query)
+        if alias:
+            filename = f"{alias}.csv"
+        else:
+            filename = f"settings_export_{idx+1}.csv"
+
         file_path_csv = os.path.join(output_folder, filename)
 
         with open(file_path_csv, mode='w', newline='', encoding='utf-8') as csvfile:
