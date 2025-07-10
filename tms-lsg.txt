@@ -4,6 +4,7 @@ SELECT
     id,
     clienacctcde AS clientid,
     tenantacctaddr AS corporatename,
+    bussnature AS clientname,
     tenantacctaddr AS clientaddress,
     tenantacctcno AS clientcontactno,
     tenantaccttin AS clienttin,
@@ -49,7 +50,7 @@ SELECT
     tenanttype AS tenanttypeid,
     clientnme AS tradename,
     busscategory AS categoryid,
-    tin
+    tin,
     foperiodfrdte AS fitoutfrom,
     foperiodtodte AS fitoutto,
     br_tin AS headofficetin,
