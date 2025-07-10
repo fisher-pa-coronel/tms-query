@@ -26,7 +26,7 @@ FROM branchfile AS malls;
 
 SELECT 
     id,
-    loccode AS locationcode,
+    loccde AS locationcode,
     flrlvl AS mallfloorlevelid,
     flrareain as interiorarea,
     flrareaex as exteriorarea,
