@@ -39,3 +39,22 @@ SELECT
 FROM rentalschemefile AS t_m_s_rental_schemes;
 
 //main module
+
+SELECT 
+    id,
+    id AS counter,
+    termsofleasecde AS anno,
+    loccde AS locationid,
+    storenme AS establishmentname,
+    tenanttype AS tenanttypeid,
+    clientnme AS tradename,
+    busscategory AS categoryid,
+    tin
+    foperiodfrdte AS fitoutfrom,
+    foperiodtodte AS fitoutto,
+    br_tin AS headofficetin,
+    br_address AS headofficeaddress,
+    termstatus AS status,
+    terminatedte AS terminatedat,
+    preparedby AS createdby,
+FROM clientofferfile AS t_m_s_award_notices;
