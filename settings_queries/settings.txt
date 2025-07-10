@@ -54,8 +54,8 @@ SELECT
     usercde AS employeenumber,
     regdte AS created_at,
     CASE
-        WHEN status = 1 THEN 10
-        WHEN status IS NULL THEN 20
+        WHEN active = 1 THEN 10
+        WHEN active IS NULL THEN 20
     END AS `status`
 FROM userfile AS users;
 
