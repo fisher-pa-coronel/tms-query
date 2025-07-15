@@ -44,21 +44,23 @@ SELECT
 FROM locationfile AS locations;
 
 SELECT 
-    id,
-    fname AS firstname,
-    lname AS lastname,
-    mname AS middlename,
-    department AS departmentid,
-    email_add AS email,
-    '$2y$10$0yh3yqTsImxsx5cqsl0PFejOEcVlTGAqajZpSyzTf.8P05mu51ooa' AS password,
+    users.id,
+    users.fname AS firstname,
+    users.lname AS lastname,
+    users.mname AS middlename,
+    users.email_add AS email,
+    '$2y$10$0yh3yqTsImxsx5cqsl0PFejOEcVlTGAqajZpSyzTf.8P05mu51ooa' AS `password`,
     '1' AS mallid,
-    usercde AS employeenumber,
-    regdte AS created_at,
+    users.usercde AS employeenumber,
+    users.regdte AS created_at,
+    dept.id AS departmentid,
     CASE
-        WHEN active = 1 THEN 10
-        WHEN active IS NULL THEN 20
+        WHEN users.active = 1 THEN 10
+        WHEN users.active IS NULL THEN 20
     END AS `status`
-FROM userfile AS users;
+FROM userfile AS users
+LEFT JOIN departmentfile dept ON users.department = dept.deptdesc
+ORDER BY users.id;
 
 SELECT
     id,

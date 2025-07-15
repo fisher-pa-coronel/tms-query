@@ -57,3 +57,13 @@ SELECT
     terminatedte AS terminatedat,
     preparedby AS createdby
 FROM clientofferfile AS t_m_s_award_notices;
+
+SELECT
+    id,
+    id AS contracts_tmsawardnoticeid,
+    contractbranchnme AS contracts_mallid,
+    termsofleasecde AS contracts_anno,
+    id AS contracts_counter,
+    contractcde AS contracts_contractid
+FROM clientofferfile AS t_m_s_contracts;
+

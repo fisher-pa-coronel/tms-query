@@ -12,20 +12,10 @@ SELECT
     AS ,
 FROM  AS ;
 
+
 id	id
-counter	id
-anno	termsofleasecde
-locationid	loccde
-establishmentname	storenme
-clientid	clientnme
-tenanttypeid	tenanttype
-tradename	clientnme
-categoryid	busscategory
-tin	tin
-fitoutfrom	foperiodfrdte
-fitoutto	foperiodtodte
-headofficetin	br_tin
-headofficeaddress	br_address
-status	termstatus
-terminatedat	terminatedte
-createdby	preparedby
+contracts_tmsawardnoticeid	id
+contracts_mallid	contractbranchnme
+contracts_anno	termsofleasecde
+contracts_counter	id
+contracts_contractid	contractcde
