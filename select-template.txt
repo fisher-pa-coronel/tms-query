@@ -12,10 +12,22 @@ SELECT
     AS ,
 FROM  AS ;
 
+LEFT JOIN joining_table alias ON base_table.column = alias.column
 
-id	id
-contracts_tmsawardnoticeid	id
-contracts_mallid	contractbranchnme
-contracts_anno	termsofleasecde
-contracts_counter	id
-contracts_contractid	contractcde
+
+		id	,
+contractcde	AS	tms_contract_id	,
+termsofleasecde	AS	awardnoticeid	,
+rentscheme	AS	rentalschemeid	,
+periodfrdte	AS	fromdate	,
+periodtodte	AS	todate	,
+basicrate	AS	basicorfixedrate	,
+percentrent	AS	percentagerate	,
+minrent	AS	minimumrate	,
+uom	AS	uom	,
+secdepchargerate	AS	secdep	,
+secdepmonths	AS	sdma	,
+advrentchargerate	AS	advrent	,
+constructionchargerate	AS	conbond	,
+cancelled	AS	status	,
+

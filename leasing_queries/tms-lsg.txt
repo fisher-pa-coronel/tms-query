@@ -67,3 +67,23 @@ SELECT
     contractcde AS contracts_contractid
 FROM clientofferfile AS t_m_s_contracts;
 
+SELECT
+    id,
+    contract.id	AS	tms_contract_id	,
+    tol.id	AS	awardnoticeid	,
+    rentscheme	AS	rentalschemeid	,
+    periodfrdte	AS	fromdate	,
+    periodtodte	AS	todate	,
+    basicrate	AS	basicorfixedrate	,
+    percentrent	AS	percentagerate	,
+    minrent	AS	minimumrate	,
+    uom	AS	uom	,
+    secdepchargerate	AS	secdep	,
+    secdepmonths	AS	sdma	,
+    advrentchargerate	AS	advrent	,
+    constructionchargerate	AS	conbond	,
+    cancelled	AS	status	,
+FROM rentalchargesfile AS t_m_s_a_n_rental_charges
+LEFT JOIN clientofferfile contract ON t_m_s_a_n_rental_charges.contractcde = contract.contractcde
+LEFT JOIN clientofferfile tol ON t_m_s_a_n_rental_charges.termsofleasecde = tol.termsofleasecde
+ORDER BY t_m_s_a_n_rental_charges.id;  
