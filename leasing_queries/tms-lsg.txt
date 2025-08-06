@@ -8,7 +8,7 @@ SELECT
     tenantacctaddr AS clientaddress,
     tenantacctcno AS clientcontactno,
     tenantaccttin AS clienttin
-FROM companyaccountfile AS t_m_s_clients;
+FROM tenantaccountfile AS t_m_s_clients;
 
 SELECT
     id,
