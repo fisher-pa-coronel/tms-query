@@ -9,25 +9,11 @@ FROM old_table_name AS new_table_name;
 
 SELECT
     id,
-    AS ,
+     AS ,
 FROM  AS ;
 
 LEFT JOIN joining_table alias ON base_table.column = alias.column
 
 
-		id	,
-contractcde	AS	tms_contract_id	,
-termsofleasecde	AS	awardnoticeid	,
-rentscheme	AS	rentalschemeid	,
-periodfrdte	AS	fromdate	,
-periodtodte	AS	todate	,
-basicrate	AS	basicorfixedrate	,
-percentrent	AS	percentagerate	,
-minrent	AS	minimumrate	,
-uom	AS	uom	,
-secdepchargerate	AS	secdep	,
-secdepmonths	AS	sdma	,
-advrentchargerate	AS	advrent	,
-constructionchargerate	AS	conbond	,
-cancelled	AS	status	,
+LEFT JOIN ingressfile ingress ON t_m_s_tenant_profile_x_permits.ingresscde = ingress.ingresscde
 

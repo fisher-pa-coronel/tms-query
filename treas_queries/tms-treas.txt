@@ -1,0 +1,42 @@
+//system setup
+
+//main module
+SELECT
+	t_m_s_treasuries.paymentcde AS payment_id,
+	t_m_s_treasuries.soaid AS service_invoice_id,
+	t_m_s_treasuries.or_ar_date AS transaction_date,
+	orar.or_ar_no AS reference_no,
+	orar.checkno AS check_no,
+	orar.dte_check AS check_date,
+	orar.other_pay AS check_bank,
+	orar.company_acct AS bank_account_no,
+	CASE
+		WHEN orar.paymenttype = 'OR' THEN 'CR'
+		ELSE orar.paymenttype
+	END AS receipt_type,
+	CASE
+		WHEN orar.paymenttype = 'AR' THEN orar.checkno
+		ELSE ''
+	END AS pdc,
+	CASE
+		WHEN orar.posted = 1 THEN 30
+		WHEN orar.cancelled = 1 THEN 20
+		ELSE 10
+	END AS 'status',
+	CASE
+	    WHEN t_m_s_treasuries.cash_amt != 0 THEN t_m_s_treasuries.cash_amt
+	    WHEN t_m_s_treasuries.check_amt != 0 THEN t_m_s_treasuries.check_amt
+	    ELSE 0
+	END AS amount_paid,
+	CASE
+	    WHEN t_m_s_treasuries.cash_amt != 0 THEN 1
+	    WHEN t_m_s_treasuries.check_amt != 0 THEN 2
+	    ELSE 3
+	END AS mode_of_payment,
+	CASE
+	    WHEN t_m_s_treasuries.ewt_zeroseven_amt != 0 THEN t_m_s_treasuries.ewt_zeroseven_amt
+	    WHEN t_m_s_treasuries.ewt_zerosix_amt != 0 THEN t_m_s_treasuries.ewt_zerosix_amt
+	    ELSE 0
+	END AS ewt
+FROM treasurypayfile AS t_m_s_treasuries
+LEFT JOIN `treasuryorarfile` orar ON t_m_s_treasuries.id = orar.payid
