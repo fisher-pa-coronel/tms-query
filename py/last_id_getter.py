@@ -39,7 +39,7 @@ for table in tables:
         result = cursor.fetchone()
         last_id = result[0] if result[0] is not None else 0  # Handle NULL (empty table)
         results.append({"table_name": table_name, "last_id": last_id})
-        print(f"Table: {table_name} → Last ID: {last_id}")
+        # print(f"Table: {table_name} → Last ID: {last_id}")
     except Exception as e:
         print(f"⚠️ Error reading from table '{table_name}': {e}")
         results.append({"table_name": table_name, "last_id": None})
@@ -51,7 +51,7 @@ with open(output_path, mode='w', newline='', encoding='utf-8') as csvfile:
     writer.writeheader()
     writer.writerows(results)
 
-# print(f"\n✅ Results saved to: {output_path}")
+print(f"\n✅ Results saved to: {output_path}")
 
 # Close connection
 cursor.close()
