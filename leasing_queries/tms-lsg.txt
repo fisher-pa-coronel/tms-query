@@ -2,8 +2,8 @@
 
 SELECT 
     id,
-    clienacctcde AS clientid,
-    tenantacctaddr AS corporatename,
+    clientacctcde AS clientid,
+    tenantacctnme AS corporatename,
     bussnature AS clientname,
     tenantacctaddr AS clientaddress,
     tenantacctcno AS clientcontactno,
@@ -43,6 +43,7 @@ SELECT
     id,
     id AS counter,
     termsofleasecde AS anno,
+    '2' AS mallid,
     loccde AS locationid,
     storenme AS establishmentname,
     tenanttype AS tenanttypeid,
