@@ -12,13 +12,6 @@ FROM tenantaccountfile AS t_m_s_clients;
 
 SELECT
     id,
-    tenantcde AS tenanttypeid,
-    tenantdesc AS description,
-    contractdoc AS document
-FROM tenanttypefile AS t_m_s_tenant_types;
-
-SELECT
-    id,
     busscategorycde AS tmsBusinessCategoryID,
     busscategorydsc AS description,
     CASE
@@ -27,37 +20,54 @@ SELECT
     END AS `status`
 FROM businesscategoryfile AS t_m_s_business_categories;
 
-SELECT
+SELECT 
     id,
-    rscde AS rentalschemeid,
-    rsnme AS description,
+    loccde AS locationcode,
+    flrlvl AS mallfloorlevelid,
+    flrareain as interiorarea,
+    flrareaex as exteriorarea,
+    unitno,
+    totalflrarea AS totalarea,
+    
+    CASE
+        WHEN branchcde = 'QAV' THEN 1
+        WHEN branchcde = 'MLB' THEN 2
+    END AS mallid,
     CASE
         WHEN deleted = 0 THEN 10
         WHEN deleted = 1 THEN 20
     END AS `status`
-FROM rentalschemefile AS t_m_s_rental_schemes;
+FROM locationfile AS locations;
 
 //main module
 
 SELECT 
-    id,
-    id AS counter,
-    termsofleasecde AS anno,
+    t_m_s_award_notices.id,
+    t_m_s_award_notices.id AS counter,
+    t_m_s_award_notices.termsofleasecde AS anno,
     '2' AS mallid,
-    loccde AS locationid,
-    storenme AS establishmentname,
-    tenanttype AS tenanttypeid,
-    clientnme AS tradename,
-    busscategory AS categoryid,
-    tin,
-    foperiodfrdte AS fitoutfrom,
-    foperiodtodte AS fitoutto,
-    br_tin AS headofficetin,
-    br_address AS headofficeaddress,
-    termstatus AS status,
-    terminatedte AS terminatedat,
-    preparedby AS createdby
-FROM clientofferfile AS t_m_s_award_notices;
+    t_m_s_award_notices.loccde AS locationid,
+    t_m_s_award_notices.storenme AS establishmentname,
+    t_m_s_award_notices.tenanttype AS tenanttypeid,
+    t_m_s_award_notices.clientnme AS tradename,
+    t_m_s_award_notices.busscategory AS categoryid,
+    t_m_s_award_notices.tin,
+    t_m_s_award_notices.foperiodfrdte AS fitoutfrom,
+    t_m_s_award_notices.foperiodtodte AS fitoutto,
+    t_m_s_award_notices.br_tin AS headofficetin,
+    t_m_s_award_notices.br_address AS headofficeaddress,
+    '10' AS status,
+    CASE
+        WHEN t_m_s_award_notices.posted = 0 THEN 10
+        WHEN t_m_s_award_notices.posted = 1 AND terminate = 0 THEN 20
+        WHEN t_m_s_award_notices.terminate = 1 AND posted = 1 THEN 30
+    END AS `state`,
+    t_m_s_award_notices.terminatedte AS terminatedat,
+    t_m_s_award_notices.preparedby AS createdby,
+    taf.id AS clientid
+FROM clientofferfile AS t_m_s_award_notices
+LEFT JOIN tenantaccountfile taf ON t_m_s_award_notices.clientnme = taf.tenantacctnme
+GROUP BY t_m_s_award_notices.id;
 
 SELECT
     id,
@@ -65,25 +75,38 @@ SELECT
     contractbranchnme AS contracts_mallid,
     termsofleasecde AS contracts_anno,
     id AS contracts_counter,
-    contractcde AS contracts_contractid
+    contractcde AS contracts_contractid,
+    '10' AS contracts_status,
+    CASE
+        WHEN posted = 0 THEN 10
+        WHEN posted = 1 AND terminate = 0 THEN 20
+        WHEN terminate = 1 AND posted = 1 THEN 30
+    END AS `contract_state`
 FROM clientofferfile AS t_m_s_contracts;
 
 SELECT
-    t_m_s_a_n_rental_charges.id AS id,
     contract.id	AS	tms_contract_id	,
     tol.id	AS	awardnoticeid	,
-    rs.rsnme	AS	rentalschemeid	,
+    CASE
+        WHEN rs.rsnme = 'FIXED RENT' THEN 2
+        WHEN rs.rsnme = 'BASIC AND PERCENTAGE RENT' THEN 4
+        WHEN rs.rsnme = 'BASIC PLUS PERCENTAGE OR MINIMUM' THEN 4
+    END AS rentalschemeid,
     periodfrdte	AS	fromdate	,
     periodtodte	AS	todate	,
     basicrate	AS	basicorfixedrate	,
     percentrent	AS	percentagerate	,
+    '0' AS ari,
     minrent	AS	minimumrate	,
     uom	AS	uom	,
     secdepchargerate	AS	secdep	,
     secdepmonths	AS	sdma	,
     advrentchargerate	AS	advrent	,
     constructionchargerate	AS	conbond	,
-    t_m_s_a_n_rental_charges.cancelled	AS	STATUS
+    CASE
+        WHEN t_m_s_a_n_rental_charges.cancelled = 0 THEN 10
+        ELSE 20
+    END AS `status`
 FROM rentalchargesfile AS t_m_s_a_n_rental_charges
 LEFT JOIN clientofferfile contract ON t_m_s_a_n_rental_charges.contractcde = contract.contractcde
 LEFT JOIN clientofferfile tol ON t_m_s_a_n_rental_charges.termsofleasecde = tol.termsofleasecde
