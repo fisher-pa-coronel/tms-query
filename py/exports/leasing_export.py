@@ -17,7 +17,7 @@ output_folder = "generated_exports"
 os.makedirs(output_folder, exist_ok=True)  # Create if not exists
 
 # Read SQL file
-file_path = "leasing_queries\\tms-lsg.txt"  # Use double backslash or raw string
+file_path = "leasing_queries\\tms-lsg-qav.txt"  # Use double backslash or raw string
 with open(file_path, 'r') as file:
     content = file.read()
 

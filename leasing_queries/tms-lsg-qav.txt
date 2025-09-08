@@ -1,0 +1,120 @@
+//system setup
+
+SELECT 
+    id,
+    clientacctcde AS clientid,
+    '2' AS mallid,
+    tenantacctnme AS corporatename,
+    bussnature AS clientname,
+    tenantacctaddr AS clientaddress,
+    tenantacctcno AS clientcontactno,
+    tenantaccttin AS clienttin
+FROM tenantaccountfile AS t_m_s_clients;
+
+SELECT
+    id,
+    busscategorycde AS tmsBusinessCategoryID,
+    busscategorydsc AS description,
+    CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`
+FROM businesscategoryfile AS t_m_s_business_categories;
+
+SELECT 
+    id,
+    loccde AS locationcode,
+    flrlvl AS mallfloorlevelid,
+    flrareain as interiorarea,
+    flrareaex as exteriorarea,
+    unitno,
+    totalflrarea AS totalarea,
+    
+    CASE
+        WHEN branchcde = 'QAV' THEN 1
+        WHEN branchcde = 'MLB' THEN 2
+    END AS mallid,
+    CASE
+        WHEN deleted = 0 THEN 10
+        WHEN deleted = 1 THEN 20
+    END AS `status`
+FROM locationfile AS locations;
+
+//main module
+
+SELECT 
+    t_m_s_award_notices.id,
+    t_m_s_award_notices.id AS counter,
+    t_m_s_award_notices.termsofleasecde AS anno,
+    '2' AS mallid,
+    lof.id AS locationid,
+    t_m_s_award_notices.storenme AS establishmentname,
+    t_m_s_award_notices.tenanttype AS tenanttypeid,
+    t_m_s_award_notices.clientnme AS tradename,
+    t_m_s_award_notices.busscategory AS categoryid,
+    t_m_s_award_notices.tin,
+    t_m_s_award_notices.foperiodfrdte AS fitoutfrom,
+    t_m_s_award_notices.foperiodtodte AS fitoutto,
+    t_m_s_award_notices.br_tin AS headofficetin,
+    t_m_s_award_notices.br_address AS headofficeaddress,
+    '10' AS status,
+    CASE
+        WHEN t_m_s_award_notices.posted = 0 THEN 10
+        WHEN t_m_s_award_notices.posted = 1 AND terminate = 0 THEN 20
+        WHEN t_m_s_award_notices.terminate = 1 AND posted = 1 THEN 30
+    END AS `state`,
+    t_m_s_award_notices.terminatedte AS terminatedat,
+    t_m_s_award_notices.preparedby AS createdby,
+    taf.id AS clientid
+FROM clientofferfile AS t_m_s_award_notices
+LEFT JOIN tenantaccountfile taf ON t_m_s_award_notices.clientnme = taf.tenantacctnme
+LEFT JOIN locationfile lof ON t_m_s_award_notices.loccde = lof.loccde
+GROUP BY t_m_s_award_notices.id;
+
+SELECT
+    id,
+    id AS contracts_tmsawardnoticeid,
+    '2' AS contracts_mallid,
+    termsofleasecde AS contracts_anno,
+    id AS contracts_counter,
+    contractcde AS contracts_contractid,
+    CASE
+        WHEN contractstatus = 0 THEN 10
+        WHEN contractstatus = 1 THEN 20
+        ELSE 10
+    END AS contracts_status,
+    CASE
+        WHEN contractposted = 0 THEN 10
+        WHEN contractposted = 1 THEN 20
+    END AS `contracts_state`
+FROM clientofferfile AS t_m_s_contracts;
+
+SELECT
+    contract.id	AS	tms_contract_id	,
+    tol.id	AS	awardnoticeid	,
+    CASE
+        WHEN rs.rsnme = 'FIXED RENT' THEN 2
+        WHEN rs.rsnme = 'BASIC AND PERCENTAGE RENT' THEN 4
+        WHEN rs.rsnme = 'BASIC PLUS PERCENTAGE OR MINIMUM' THEN 4
+    END AS rentalschemeid,
+    periodfrdte	AS	fromdate	,
+    periodtodte	AS	todate	,
+    basicrate	AS	basicorfixedrate	,
+    percentrent	AS	percentagerate	,
+    '0' AS ari,
+    minrent	AS	minimumrate	,
+    uom	AS	uom	,
+    secdepchargerate	AS	secdep	,
+    secdepmonths	AS	sdma	,
+    advrentchargerate	AS	advrent	,
+    constructionchargerate	AS	conbond	,
+    CASE
+        WHEN t_m_s_a_n_rental_charges.cancelled = 0 THEN 10
+        ELSE 20
+    END AS `status`
+FROM rentalchargesfile AS t_m_s_a_n_rental_charges
+LEFT JOIN clientofferfile contract ON t_m_s_a_n_rental_charges.contractcde = contract.contractcde
+LEFT JOIN clientofferfile tol ON t_m_s_a_n_rental_charges.termsofleasecde = tol.termsofleasecde
+LEFT JOIN rentalschemefile rs ON t_m_s_a_n_rental_charges.rentscheme = rs.rsnme
+ORDER BY t_m_s_a_n_rental_charges.id;  
+

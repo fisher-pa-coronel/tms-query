@@ -1,8 +1,9 @@
 //system setup
 
 SELECT 
-    id,
+    id + 661,
     clientacctcde AS clientid,
+    '1' AS mallid,
     tenantacctnme AS corporatename,
     bussnature AS clientname,
     tenantacctaddr AS clientaddress,
@@ -11,7 +12,7 @@ SELECT
 FROM tenantaccountfile AS t_m_s_clients;
 
 SELECT
-    id,
+    id + 57,
     busscategorycde AS tmsBusinessCategoryID,
     busscategorydsc AS description,
     CASE
@@ -21,7 +22,7 @@ SELECT
 FROM businesscategoryfile AS t_m_s_business_categories;
 
 SELECT 
-    id,
+    id + 656,
     loccde AS locationcode,
     flrlvl AS mallfloorlevelid,
     flrareain as interiorarea,
@@ -42,11 +43,11 @@ FROM locationfile AS locations;
 //main module
 
 SELECT 
-    t_m_s_award_notices.id,
+    t_m_s_award_notices.id + 990,
     t_m_s_award_notices.id AS counter,
     t_m_s_award_notices.termsofleasecde AS anno,
-    '2' AS mallid,
-    t_m_s_award_notices.loccde AS locationid,
+    '1' AS mallid,
+    lof.id + 656 AS locationid,
     t_m_s_award_notices.storenme AS establishmentname,
     t_m_s_award_notices.tenanttype AS tenanttypeid,
     t_m_s_award_notices.clientnme AS tradename,
@@ -64,24 +65,27 @@ SELECT
     END AS `state`,
     t_m_s_award_notices.terminatedte AS terminatedat,
     t_m_s_award_notices.preparedby AS createdby,
-    taf.id AS clientid
+    taf.id + 661 AS clientid
 FROM clientofferfile AS t_m_s_award_notices
 LEFT JOIN tenantaccountfile taf ON t_m_s_award_notices.clientnme = taf.tenantacctnme
+LEFT JOIN locationfile lof ON t_m_s_award_notices.loccde = lof.loccde
 GROUP BY t_m_s_award_notices.id;
 
 SELECT
-    id,
-    id AS contracts_tmsawardnoticeid,
-    contractbranchnme AS contracts_mallid,
+    id + 990 AS contracts_tmsawardnoticeid,
+    '1' AS contracts_mallid,
     termsofleasecde AS contracts_anno,
     id AS contracts_counter,
     contractcde AS contracts_contractid,
-    '10' AS contracts_status,
     CASE
-        WHEN posted = 0 THEN 10
-        WHEN posted = 1 AND terminate = 0 THEN 20
-        WHEN terminate = 1 AND posted = 1 THEN 30
-    END AS `contract_state`
+        WHEN contractstatus = 0 THEN 10
+        WHEN contractstatus = 1 THEN 20
+        ELSE 10
+    END AS contracts_status,
+    CASE
+        WHEN contractposted = 0 THEN 10
+        WHEN contractposted = 1 THEN 20
+    END AS `contracts_state`
 FROM clientofferfile AS t_m_s_contracts;
 
 SELECT
