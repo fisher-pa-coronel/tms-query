@@ -8,7 +8,7 @@ conn = pymysql.connect(
     host='localhost',
     user='root',
     password='',
-    database='db_tms',  # Replace with your actual DB name
+    database='db_tms_qav',  # Replace with your actual DB name
 )
 cursor = conn.cursor()
 
@@ -17,7 +17,7 @@ output_folder = "generated_exports"
 os.makedirs(output_folder, exist_ok=True)  # Create if not exists
 
 # Read SQL file
-file_path = "leasing_queries\\tms-lsg-qav.txt"  # Use double backslash or raw string
+file_path = "ops_queries\\tms-ops-qav.txt"  # Use double backslash or raw string
 with open(file_path, 'r') as file:
     content = file.read()
 

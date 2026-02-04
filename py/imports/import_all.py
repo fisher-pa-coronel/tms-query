@@ -96,6 +96,9 @@ if __name__ == '__main__':
 
     conn = pymysql.connect(**DB_CONFIG)
     cursor = conn.cursor()
+    
+    # Disable strict mode for this session only
+    cursor.execute("SET SESSION sql_mode = ''")
 
     # Process all CSV files in main folder
     for filename in os.listdir(CSV_FOLDER):

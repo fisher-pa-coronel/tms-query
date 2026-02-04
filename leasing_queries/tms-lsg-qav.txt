@@ -18,7 +18,9 @@ SELECT
     CASE
         WHEN deleted = 0 THEN 10
         WHEN deleted = 1 THEN 20
-    END AS `status`
+    END AS `status`,
+    2 AS mallid,
+    NULL AS hashid
 FROM businesscategoryfile AS t_m_s_business_categories;
 
 SELECT 
@@ -47,6 +49,7 @@ SELECT
     t_m_s_award_notices.id AS counter,
     t_m_s_award_notices.termsofleasecde AS anno,
     '2' AS mallid,
+    NULL AS hashid,
     lof.id AS locationid,
     t_m_s_award_notices.storenme AS establishmentname,
     t_m_s_award_notices.tenanttype AS tenanttypeid,
@@ -77,6 +80,7 @@ SELECT
     '2' AS contracts_mallid,
     termsofleasecde AS contracts_anno,
     id AS contracts_counter,
+    NULL AS contracts_hashid,
     contractcde AS contracts_contractid,
     CASE
         WHEN contractstatus = 0 THEN 10
@@ -111,7 +115,8 @@ SELECT
     CASE
         WHEN t_m_s_a_n_rental_charges.cancelled = 0 THEN 10
         ELSE 20
-    END AS `status`
+    END AS `status`,
+    '00-00-0000' AS createdby
 FROM rentalchargesfile AS t_m_s_a_n_rental_charges
 LEFT JOIN clientofferfile contract ON t_m_s_a_n_rental_charges.contractcde = contract.contractcde
 LEFT JOIN clientofferfile tol ON t_m_s_a_n_rental_charges.termsofleasecde = tol.termsofleasecde

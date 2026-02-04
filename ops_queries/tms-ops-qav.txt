@@ -1,0 +1,115 @@
+//system setup
+
+SELECT
+    id,
+    preconcde AS preconstruction_code,
+    precondesc AS description,
+    '10' AS status,
+    '2' AS mall_id
+FROM preconstructionfile AS t_m_s_preconstruction_requirements;
+
+SELECT 
+    id,
+    partcde AS preoperational_code,
+    partdesc AS description,
+    '10' AS status,
+    '2' AS mall_id
+FROM particularsfile as t_m_s_preoperational_requirements;
+
+SELECT
+    id,
+    provicde AS provision_code,
+    providesc AS description,
+    '10' AS status,
+    '2' AS mall_id
+FROM provisionsfile AS t_m_s_provisions;
+
+//main module
+
+// tenant profile
+
+//problem - multiple turnoverfile
+SELECT
+    t_m_s_tenant_profiles.id,
+    t_m_s_tenant_profiles.termsofleasecde AS awardnotice_no,
+    t_m_s_tenant_profiles.turnoverdte AS turnover_date,
+    t_m_s_tenant_profiles.modeofpayment AS payment_type,
+    t_m_s_tenant_profiles.commencedte AS opening_date,
+    tof.turnoverremarks AS remarks,
+    tof.inspected AS inspected_by,
+    tof.noted AS noted_by,
+    tof.recieved AS conformed_by
+FROM ingressfile AS t_m_s_tenant_profiles
+JOIN turnoverfile AS tof 
+    ON t_m_s_tenant_profiles.ingresscde = tof.referencecde
+GROUP BY t_m_s_tenant_profiles.termsofleasecde;
+
+SELECT
+	cof.termsofleasecde AS awardnotice_no,
+	t_m_s_tenant_profile_x_meters.id AS meter_id,
+	CONCAT('MTR', LPAD(t_m_s_tenant_profile_x_meters.id, 5, '0')) AS meter_code,
+	t_m_s_tenant_profile_x_meters.multiplier AS multiplier,
+	'0' AS beginning_reading,
+	'0' AS previous_reading,
+	'10' AS 'status',
+	'1' AS created_by
+FROM tenant_profile_x_meters AS t_m_s_tenant_profile_x_meters
+JOIN clientofferfile AS cof ON t_m_s_tenant_profile_x_meters.location_code = cof.loccde
+GROUP BY t_m_s_tenant_profile_x_meters.id, cof.termsofleasecde;
+
+SELECT 
+    'ATP' AS permit_type, 
+    atpnum AS permit_no,
+    dte_expired AS expiration_date,
+    ingress.termsofleasecde AS awardnotice_no,
+    '10' AS status
+FROM ingressotherfile AS t_m_s_tenant_profile_x_permits
+LEFT JOIN ingressfile AS ingress 
+    ON t_m_s_tenant_profile_x_permits.ingresscde = ingress.ingresscde
+WHERE atpnum IS NOT NULL
+  AND TRIM(atpnum) <> ''
+  AND UPPER(TRIM(atpnum)) NOT IN ('N/A', 'NA', 'NONE', 'NULL')
+
+UNION ALL
+
+SELECT 
+    'POS / CRM' AS TYPE, 
+    posnum AS permit_no,
+    dte_expired AS expiration_date,
+    ingress.termsofleasecde AS awardnotice_no,
+    '10' AS status
+FROM ingressotherfile AS t_m_s_tenant_profile_x_permits
+LEFT JOIN ingressfile AS ingress 
+    ON t_m_s_tenant_profile_x_permits.ingresscde = ingress.ingresscde
+WHERE posnum IS NOT NULL
+  AND TRIM(posnum) <> ''
+  AND UPPER(TRIM(posnum)) NOT IN ('N/A', 'NA', 'NONE', 'NULL');
+
+SELECT
+	precon.id AS precon_id,
+	t_m_s_tenant_profile_x_pre_con.preconcde AS precon_code,
+	ingress.termsofleasecde AS awardnotice_no,
+	'10' AS 'status'
+FROM constructionfile AS t_m_s_tenant_profile_x_pre_con
+LEFT JOIN `preconstructionfile` precon ON t_m_s_tenant_profile_x_pre_con.preconcde = precon.preconcde
+LEFT JOIN ingressfile ingress ON t_m_s_tenant_profile_x_pre_con.ingresscde = ingress.ingresscde;
+
+SELECT
+	preop.id AS preop_id,
+	t_m_s_tenant_profile_x_pre_op.partcde AS preop_code,
+	ingress.termsofleasecde AS awardnotice_no,
+	'10' AS 'status'
+FROM preoperationfile AS t_m_s_tenant_profile_x_pre_op
+LEFT JOIN `particularsfile` preop ON t_m_s_tenant_profile_x_pre_op.partcde = preop.partcde
+LEFT JOIN ingressfile ingress ON t_m_s_tenant_profile_x_pre_op.ingresscde = ingress.ingresscde;
+
+SELECT
+	provi.id AS provision_id,
+	t_m_s_tenant_profile_x_provisions.provicde AS provision_code,
+	ingress.termsofleasecde AS awardnotice_no,
+	'10' AS 'status'
+FROM turnoverformfile AS t_m_s_tenant_profile_x_provisions
+LEFT JOIN provisionsfile provi ON t_m_s_tenant_profile_x_provisions.provicde = provi.provicde
+LEFT JOIN ingressfile ingress ON t_m_s_tenant_profile_x_provisions.ingresscde = ingress.ingresscde;
+
+

@@ -6,7 +6,7 @@ import os
 host = "localhost"
 user = "root"
 password = ""
-database = "db_tms"  # Change to your database name
+database = "db_tms_qav"  # Change to your database name
 output_folder = "generated_exports"
 output_file = "last_ids_per_table.csv"
 
