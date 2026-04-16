@@ -1,0 +1,91 @@
+// ebm settings
+
+SELECT
+    id,
+    orgcde AS organizer_id,
+    lessor AS organizer_name,
+    contact AS contact_number,
+    address,
+    tin as tin_number
+FROM organizerfile
+
+SELECT
+    id,
+    loccde AS location_code,
+    locdsc AS 'description',
+    CASE
+        WHEN locdsc LIKE '%mlb%' THEN 1
+        ELSE 2
+    END AS branch
+FROM locationfile
+
+// main module
+
+// epf
+
+SELECT
+    e_b_m_events_epf_information.id,
+    e_b_m_events_epf_information.eventcde AS epf_id,
+    e_b_m_events_epf_information.dte_received AS loi,
+    CASE
+        WHEN e_b_m_events_epf_information.branchcde = 'BR000001' THEN 2
+        ELSE 1
+    END AS branch,
+    e_b_m_events_epf_information.clienttype_id AS client_type,
+    e_b_m_events_epf_information.epftypefile AS event_type,
+    eventclassfile.eventclass as classification,
+    e_b_m_events_epf_information.event_type AS transaction_type,
+    e_b_m_events_epf_information.title,
+    e_b_m_events_epf_information.location,
+    e_b_m_events_epf_information.adv_rent,
+    e_b_m_events_epf_information.sec_dep,
+    e_b_m_events_epf_information.request AS requests,
+    e_b_m_events_epf_information.remarks,
+    e_b_m_events_epf_information.recommendation AS recommendations,
+    CASE
+        WHEN e_b_m_events_epf_information.cancelled = 1 THEN 20
+        ELSE 10
+    END AS 'status'
+FROM eventfile as e_b_m_events_epf_information
+LEFT JOIN eventclassfile
+    ON e_b_m_events_epf_information.eventclass_id = eventclassfile.id
+
+SELECT
+    id,
+    event_id AS epf_id,
+    moa_id,
+    CASE
+        WHEN bill_term = 'Per Day' THEN 1
+        WHEN bill_term = 'Per Week' THEN 2
+        WHEN bill_term = 'Per Month' THEN 3
+        WHEN bill_term = 'Per Year' THEN 4
+        ELSE 5
+    END AS billing_type,
+    CASE
+        WHEN percent > 0 THEN 2
+        WHEN rate > 0 THEN 1
+        WHEN rate = 0 AND percent = 0 THEN 3
+        ELSE 3
+    END AS rental_scheme,
+    dte_from AS date_from,
+    dte_to AS date_to,
+    rate AS fixed_rate,
+    percent AS percentage,
+    min_rate,
+    remarks
+FROM eventperiodcoveredfile AS e_b_m_events_rental_costs
+
+SELECT
+    id,
+    epf_id,
+    moacde AS moa_id,
+    CASE
+        WHEN branchcde = 'BR000001' THEN 2
+        ELSE 1
+    END AS branch,
+    org_id AS client_id,
+    
+
+
+
+    
