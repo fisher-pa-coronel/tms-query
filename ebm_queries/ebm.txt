@@ -7,7 +7,7 @@ SELECT
     contact AS contact_number,
     address,
     tin as tin_number
-FROM organizerfile
+FROM organizerfile;
 
 SELECT
     id,
@@ -17,7 +17,7 @@ SELECT
         WHEN locdsc LIKE '%mlb%' THEN 1
         ELSE 2
     END AS branch
-FROM locationfile
+FROM locationfile;
 
 // main module
 
@@ -30,7 +30,7 @@ SELECT
     CASE
         WHEN e_b_m_events_epf_information.branchcde = 'BR000001' THEN 2
         ELSE 1
-    END AS branch,
+    END AS branch, 
     e_b_m_events_epf_information.clienttype_id AS client_type,
     e_b_m_events_epf_information.epftypefile AS event_type,
     eventclassfile.eventclass as classification,
@@ -48,44 +48,125 @@ SELECT
     END AS 'status'
 FROM eventfile as e_b_m_events_epf_information
 LEFT JOIN eventclassfile
-    ON e_b_m_events_epf_information.eventclass_id = eventclassfile.id
+    ON e_b_m_events_epf_information.eventclass_id = eventclassfile.id;
 
+// rental cost
 SELECT
-    id,
-    event_id AS epf_id,
-    moa_id,
+    e_b_m_events_rental_costs.id,
     CASE
-        WHEN bill_term = 'Per Day' THEN 1
-        WHEN bill_term = 'Per Week' THEN 2
-        WHEN bill_term = 'Per Month' THEN 3
-        WHEN bill_term = 'Per Year' THEN 4
+        WHEN e_b_m_events_rental_costs.eventsched_id = 0 AND moa.epf_id <> 0 THEN moa.epf_id
+        ELSE e_b_m_events_rental_costs.eventsched_id
+    END AS epf_id,
+    e_b_m_events_rental_costs.moa_id,
+    CASE
+        WHEN e_b_m_events_rental_costs.bill_term = 'Per Day' THEN 1
+        WHEN e_b_m_events_rental_costs.bill_term = 'Per Week' THEN 2
+        WHEN e_b_m_events_rental_costs.bill_term = 'Per Month' THEN 3
+        WHEN e_b_m_events_rental_costs.bill_term = 'Per Year' THEN 4
         ELSE 5
     END AS billing_type,
     CASE
-        WHEN percent > 0 THEN 2
-        WHEN rate > 0 THEN 1
-        WHEN rate = 0 AND percent = 0 THEN 3
+        WHEN e_b_m_events_rental_costs.percent > 0 THEN 2
+        WHEN e_b_m_events_rental_costs.rate > 0 THEN 1
+        WHEN e_b_m_events_rental_costs.rate = 0 AND percent = 0 THEN 3
         ELSE 3
     END AS rental_scheme,
-    dte_from AS date_from,
-    dte_to AS date_to,
-    rate AS fixed_rate,
-    percent AS percentage,
-    min_rate,
-    remarks
+    e_b_m_events_rental_costs.dte_from AS date_from,
+    e_b_m_events_rental_costs.dte_to AS date_to,
+    e_b_m_events_rental_costs.rate AS fixed_rate,
+    e_b_m_events_rental_costs.percent AS percentage,
+    e_b_m_events_rental_costs.min_rate,
+    e_b_m_events_rental_costs.remarks
 FROM eventperiodcoveredfile AS e_b_m_events_rental_costs
+LEFT JOIN moafile AS moa
+    ON e_b_m_events_other_services.moa_id = moa.id;
 
+// moa
 SELECT
-    id,
-    epf_id,
-    moacde AS moa_id,
+    e_b_m_events_moa_information.id,
+    e_b_m_events_moa_information.epf_id,
+    e_b_m_events_moa_information.moacde AS moa_id,
+    epf.dte_received AS loi
     CASE
-        WHEN branchcde = 'BR000001' THEN 2
+        WHEN e_b_m_events_moa_information.branchcde = 'BR000001' THEN 2
         ELSE 1
     END AS branch,
-    org_id AS client_id,
-    
+    epf.clienttype_id AS client_type,
+    epf.epftypefile AS event_type,
+    eventclassfile.eventclass as classification,
+    epf.event_type AS transaction_type,
+    epf.title,
+    epf.location,
+    epf.adv_rent,
+    epf.sec_dep,
+    epf.request AS requests,
+    epf.remarks,
+    epf.recommendation AS recommendations,
+    e_b_m_events_moa_information.floor AS floor_area,
+    e_b_m_events_moa_information.caterer AS caterer,
+    e_b_m_events_moa_information.adv_rent_add AS adv_rent,
+    CASE
+        WHEN e_b_m_events_moa_information.roll_over <> '' OR e_b_m_events_moa_information.roll_over IS NOT NULL THEN e_b_m_events_moa_information.roll_over
+        ELSE NULL
+    END AS sec_dep_moa_id,
+    CASE
+        WHEN e_b_m_events_moa_information.sec_dep_add <> 0 THEN e_b_m_events_moa_information.roll_over_amt
+        ELSE e_b_m_events_moa_information.roll_over_amt
+    END AS sec_dep,
+    // to do and check - rethink logic
+    CASE
+        WHEN e_b_m_events_moa_information.roll_over = '' OR e_b_m_events_moa_information.roll_over IS NULL THEN 10
+        ELSE 20
+    END AS sec_dep_status,
+    // to do check status
+    CASE
+        WHEN e_b_m_events_moa_information.cancelled = 1 THEN 20
+        ELSE 30
+    END AS 'status',
+    e_b_m_events_moa_information.due_date AS duedate,
+    // e_b_m_events_moa_information.
+FROM moafile AS e_b_m_events_moa_information
+LEFT JOIN eventfile AS epf
+    ON e_b_m_events_moa_information.epf_id = epf.id
+LEFT JOIN eventclassfile
+    ON epf.eventclass_id = eventclassfile.id;
 
+// to do other services,  ingress egress
 
+// ingress egress
+SELECT
+    e_b_m_events_ingress_egress.id,
+    CASE
+        WHEN e_b_m_events_ingress_egress.eventsched_id = 0 AND moa.epf_id <> 0 THEN moa.epf_id
+        ELSE eventsched_id
+    END AS epf_id,
+    e_b_m_events_ingress_egress.moa_id,
+    CASE
+        WHEN e_b_m_events_ingress_egress.type_dte = 'ingress' THEN 1
+        ELSE 2
+    END AS type,
+    e_b_m_events_ingress_egress.dte_ingress_egress AS date,
+    e_b_m_events_ingress_egress.time_fr AS time_from,
+    e_b_m_events_ingress_egress.time_to AS time_to,
+    '10' AS 'status'
+FROM ingressandegressfile AS e_b_m_events_ingress_egress
+LEFT JOIN moafile AS moa
+    ON e_b_m_events_ingress_egress.moa_id = moa.id;
+
+SELECT
+    e_b_m_events_other_services.id,
+    CASE
+        WHEN e_b_m_events_other_services.event_id = 0 AND moa.epf_id <> 0 THEN moa.epf_id
+        ELSE event_id
+    END AS epf_id,
+    e_b_m_events_other_services.moa_id,
+    e_b_m_events_other_services.chargescde AS service_id,
+    e_b_m_events_other_services.rate AS rate,
+    e_b_m_events_other_services.qty,
+    e_b_m_events_other_services.remarks,
+    '10' AS 'status'
+FROM otherratefile AS e_b_m_events_other_services
+LEFT JOIN moafile AS moa
+    ON e_b_m_events_other_services.moa_id = moa.id;
 
     
