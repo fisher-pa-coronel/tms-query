@@ -19,6 +19,17 @@ SELECT
     END AS mall_id
 FROM locationfile AS e_b_m_locations;
 
+SELECT
+    e_b_m_authorized_signatories.id,
+    e_b_m_authorized_signatories.lessee_rep AS name,
+    e_b_m_authorized_signatories.lessee_rep_position AS designation,
+    e_b_m_authorized_signatories.lessee_rep_contact AS contact_number,
+    '10' AS status,
+    moa.org_id AS organizer_id
+FROM representativefile AS e_b_m_authorized_signatories
+LEFT JOIN moafile AS moa
+    ON e_b_m_authorized_signatories.moa_id = moa.id;
+
 // main module
 
 // epf
@@ -31,7 +42,15 @@ SELECT
         WHEN e_b_m_events_epf_information.branchcde = 'BR000001' THEN 2
         ELSE 1
     END AS branch, 
-    e_b_m_events_epf_information.clienttype_id AS client_type,
+    CASE
+        WHEN e_b_m_events_epf_information.clienttype_id = 1 THEN 1
+        WHEN e_b_m_events_epf_information.clienttype_id = 2 THEN 2
+        ELSE 1
+    END AS client_type,
+    CASE
+        WHEN e_b_m_events_epf_information.clientoffer_id IS NOT NULL THEN e_b_m_events_epf_information.clientoffer_id
+        ELSE e_b_m_events_epf_information.org_id
+    END AS client_id,
     e_b_m_events_epf_information.epftype_id AS event_type,
     eventclassfile.eventclass as classification,
     e_b_m_events_epf_information.event_type AS transaction_type,
@@ -91,7 +110,15 @@ SELECT
         WHEN e_b_m_events_moa_information.branchcde = 'BR000001' THEN 2
         ELSE 1
     END AS branch,
-    epf.clienttype_id AS client_type,
+    CASE
+        WHEN epf.clienttype_id = 1 THEN 1
+        WHEN epf.clienttype_id = 2 THEN 2
+        ELSE 1
+    END AS client_type,
+    CASE
+        WHEN epf.clientoffer_id IS NOT NULL THEN epf.clientoffer_id
+        ELSE epf.org_id
+    END AS client_id,
     epf.epftype_id AS event_type,
     eventclassfile.eventclass as classification,
     epf.event_type AS transaction_type,
