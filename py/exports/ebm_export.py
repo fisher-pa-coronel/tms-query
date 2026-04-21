@@ -57,9 +57,9 @@ for idx, query in enumerate(queries):
 
         file_path_csv = os.path.join(output_folder, filename)
 
-        with open(file_path_csv, mode='a', newline='', encoding='utf-8') as csvfile:
+        with open(file_path_csv, mode='w', newline='', encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
-            # writer.writerow(columns)  # Write header
+            writer.writerow(columns)  # Write header
             writer.writerows(rows)    # Write data
 
         print(f"Exported query {idx+1} to '{file_path_csv}'")
