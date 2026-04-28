@@ -63,11 +63,14 @@ SELECT
     e_b_m_events_epf_information.recommendation AS recommendations,
     CASE
         WHEN e_b_m_events_epf_information.cancelled = 1 THEN 20
+        WHEN moa.id IS NOT NULL THEN 30
         ELSE 10
     END AS 'status'
 FROM eventfile as e_b_m_events_epf_information
 LEFT JOIN eventclassfile
-    ON e_b_m_events_epf_information.eventclass_id = eventclassfile.id;
+    ON e_b_m_events_epf_information.eventclass_id = eventclassfile.id
+LEFT JOIN moafile AS moa
+    ON e_b_m_events_epf_information.id = moa.epf_id;
 
 // rental cost
 SELECT
@@ -148,6 +151,7 @@ SELECT
     // to do check status
     CASE
         WHEN e_b_m_events_moa_information.cancelled = 1 THEN 20
+        WHEN e_b_m_events_moa_information.approved_by > 0 THEN 40
         ELSE 30
     END AS 'status'
     //e_b_m_events_moa_information.due_date AS duedate
