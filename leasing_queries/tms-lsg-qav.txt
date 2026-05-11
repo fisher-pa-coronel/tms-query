@@ -12,6 +12,27 @@ SELECT
 FROM tenantaccountfile AS t_m_s_clients;
 
 SELECT
+    MIN(t_m_s_authorized_signatories.id) AS id,
+    COALESCE(
+        (SELECT id FROM clientofferfile WHERE clientofferfile.termsofleasecde = t_m_s_authorized_signatories.transcde LIMIT 1),
+        (SELECT id FROM clientofferfile WHERE clientofferfile.offercde = t_m_s_authorized_signatories.transcde LIMIT 1),
+        (SELECT id FROM clientofferfile WHERE clientofferfile.contractcde = t_m_s_authorized_signatories.transcde LIMIT 1),
+        (SELECT id FROM clientofferfile WHERE clientofferfile.loccde = t_m_s_authorized_signatories.transcde LIMIT 1)
+    ) AS tmsawardnoticeid,
+    t_m_s_authorized_signatories.repnme AS NAME,
+    MIN(t_m_s_authorized_signatories.repposition) AS designation,
+    MIN(
+        CASE
+            WHEN t_m_s_authorized_signatories.cancelled = 1 THEN 20
+            ELSE 10
+        END
+    ) AS STATUS
+FROM representativefile AS t_m_s_authorized_signatories
+GROUP BY
+    tmsawardnoticeid,
+    t_m_s_authorized_signatories.repnme;
+
+SELECT
     id,
     busscategorycde AS tmsBusinessCategoryID,
     busscategorydsc AS description,

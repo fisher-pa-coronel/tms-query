@@ -2,21 +2,27 @@
 
 SELECT
     id,
-    orgcde AS organizer_id,
-    lessor AS organizer_name,
+    id AS organizer_id,
+    orgcde AS organizer_name,
     contact AS contact_number,
     address,
-    tin as tin_number
+    tin as tin_number,
+    '10' as status
 FROM organizerfile AS e_b_m_organizers;
 
 SELECT
     id,
     loccde AS location_code,
+    CASE
+        WHEN locdsc LIKE '%mlb%' THEN Fishermall Malabon
+        ELSE Fishermall Quezon Avenue
+    END AS mall_name,
     locdsc AS 'description',
     CASE
         WHEN locdsc LIKE '%mlb%' THEN 1
         ELSE 2
-    END AS mall_id
+    END AS mall_id,
+    '10' as status
 FROM locationfile AS e_b_m_locations;
 
 SELECT
